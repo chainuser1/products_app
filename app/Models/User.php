@@ -53,4 +53,14 @@ class User extends Authenticatable
         $created_at =  new Carbon($this->attributes['created_at']);
         return $created_at->diffForHumans();
     }
+
+    public function setNameAttribute($value){
+        $name = explode(' ',$value);
+        $this->attributes['name'] = strtolower($name[0]);
+    }
+
+    public function getNameAttribute(){
+        return strtolower($this->attributes['name']);
+    }
+
 }

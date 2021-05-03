@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Models\Profile;
 use App\Models\UserPhoto;
+use Str;
 class ProfileController extends Controller
 {
     //
@@ -16,20 +17,32 @@ class ProfileController extends Controller
 
     public function show($id){
         $profile = Auth::user()->profile;
-        $default =  'gallery/blank-profile-picture-973460_640.png';
-        $photos   = UserPhoto::
-                    where('profile_id', $profile->id)
-                    ->orderByDesc('updated_at')
-                    ->limit(1)->get();
-        $photo = $photos[0]->filename?$photos[0]->filename:
+        $default =  'blank-profile-picture-973460_640.png';
+
+        // UserPhoto::
+        // where('profile_id', $profile->id)
+        // ->orderByDesc('updated_at')
+        // ->limit(1)
+        // ->get()
+
+
+        $photos = null;
+        
+        if(isset($profile->photos[0])){
+            $photos=$profile->photos->sortByDesc('updated_at')->first()->get();
+        }
+
+
+
+        $photo = $photos?$photos[0]->filename:
                     $default;
-                    
+        
+        $directory = 'gallery/';
+        $file = $photos?Auth::user()->name.'/'.$photo: $photo;
 
         return view('profile.show')
                 ->withProfile($profile)
-                ->withPhoto('gallery/'
-                .strtolower($profile->user->name).
-                '/'.$photo);
+                ->withPhoto($directory.$file);
 
         
     }
@@ -96,12 +109,12 @@ class ProfileController extends Controller
         $validator =  Validator::make(
             $req,
             [
-                'fullname' => 'required',
+                'fullname' => 'required|regex:/^[\pL\s\-]+$/u',
                 'address' => 'required',
             ],
             [
                 'fullname.required' => 'Please provide your full name.',
-                // 'fullname.alpha' => 'Name must be in Alpha Characters',
+                'fullname.alpha' => 'Name must be in Alpha Characters',
                 'address' => 'Please provide your address',
             ]
         );

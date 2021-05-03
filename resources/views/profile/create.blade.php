@@ -16,7 +16,7 @@
 <div>
 <label>Email: <strong>{{Auth::user()->email}}</strong></label>
 
-@if($profile->id)
+@if(isset($profile))
 <form action="{{route('profile.update',[$profile->user->email,$profile->id])}}" method="post">
 @else
 
@@ -29,14 +29,14 @@
     @csrf
   <div class="form-group">
     <label>Fullname:</label>
-    <input  value="{{$profile->fullname}}" type="text" class="form-control col-md-6" name="fullname"  aria-describedby="nameHelp" placeholder="Enter name">
+    <input  value="{{old('fullname')}}" type="text" class="form-control col-md-6" name="fullname"  aria-describedby="nameHelp" placeholder="Enter name">
     <small id="nameHelp" class="form-text text-muted">Include given name and family name</small>
   </div>
  
   <div class="form-group">
   <label>Address</label>
   <textarea name="address"  class="form-control col-md-6" aria-describedby="addressHelp">
-      {{$profile->address}}
+      {{old('address')}}
   </textarea>
   <small id="addressHelp" class="form-text text-muted">Include street and city</small>
   </div>
