@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use Session;
 use Validator;
+use App\Http\Resources\CategoryResource;
 class CategoryController extends Controller
 {
 
@@ -14,8 +15,8 @@ class CategoryController extends Controller
     }
     //
     public function index(){
-        $categories = Category::all();
-        return view('categories.index')->withCategories($categories);
+        $categories = CategoryResource::collection(Category::all());
+        return $categories;
     }
 
     

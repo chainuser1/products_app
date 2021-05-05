@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use Validator;
+use App\Http\Resources\ProductResource;
 class ProductController extends Controller
 {
 
@@ -14,8 +15,10 @@ class ProductController extends Controller
     }
     
     public function index(){
-        return view('products.index')
-                ->withProducts(Product::all());
+        // return view('products.index')
+        //         ->withProducts(Product::all());
+        $products = ProductResource::collection(Product::all());
+        return $products;
     }
 
     public function create(){
@@ -23,29 +26,23 @@ class ProductController extends Controller
                 ->withCategories(Category::all());
     }
 
+    protected function validateRequest(){
+        return request()->validate(
+            [
+                'name' =>  'required',
+                'price' => 'required',
+                'category_id' => 'required|exists:categories,id'
+            ]
+        );
+    }
 
     public function store(){
-        $rules = [
-            'name' =>  'required',
-            'price' => 'required',
-            'category_id' => 'required'
-        ];
-        $validator = Validator::make(request()->all(),$rules);
-        if($validator->fails()){
-            return back()->withInput()
-                    ->withErrors($validator->errors());
-        }
-
-        $product = new Product();
-        $product->name=request()->name;
-        $product->price=request()->price;
-        $product->category_id=request()->category_id;
-        $product->created_at=now();
-        $product->updated_at=now();
-        $product->save();
-
-        return redirect()->route('products.index');
+        $data = $this->validateRequest();
+        $data[] = ['created_at' => now(), 'updated_at' => now()];
+        $product = Product::create($data);
+        return new ProductResource($product);
     }
+
 
     public function show_category($product){
         return view('categories.show')

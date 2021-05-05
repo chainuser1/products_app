@@ -21,7 +21,7 @@ Auth::routes();
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('vue.index');
 });
 Route::get('/categories',[CategoryController::class,'index'])
 ->name('categories');
@@ -55,6 +55,7 @@ Route::get('/category/{id}/show',[CategoryController::class,'show'])
 
 //products
 Route::get('/products',[ProductController::class,'index']);
+
 Route::resource('products',ProductController::class)
         ->only(['index','store','create','show','edit']);
 Route::post('/products/{product}/update',[ProductController::class,'update'])

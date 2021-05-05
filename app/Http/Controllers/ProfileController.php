@@ -19,12 +19,6 @@ class ProfileController extends Controller
         $profile = Auth::user()->profile;
         $default =  'blank-profile-picture-973460_640.png';
 
-        // UserPhoto::
-        // where('profile_id', $profile->id)
-        // ->orderByDesc('updated_at')
-        // ->limit(1)
-        // ->get()
-
 
         $photos = null;
         

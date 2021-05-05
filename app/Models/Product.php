@@ -8,6 +8,9 @@ use Carbon\Carbon;
 class Product extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['created_at','name',
+    'updated_at','category_id','price'];
     // protected $attributes = ['created_at','updated_at'];
     protected $dates = ['created_at','updated_at'];
     public function category(){
